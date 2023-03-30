@@ -5,12 +5,12 @@ export default StyleSheet.create({
     flex: 1,
     alignItems: "flex-start",
     justifyContent: "flex-start",
-    paddingTop: 25,
+    paddingTop: 25
   },
   texto: {
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 10,
-    marginBottom: 20,
-  },
+    marginBottom: 20
+  }
 });

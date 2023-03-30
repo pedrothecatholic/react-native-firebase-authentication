@@ -6,6 +6,6 @@ export default StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "flex-start",
     paddingTop: 25,
-    paddingHorizontal: 20,
+    paddingHorizontal: 20
   }
 });
