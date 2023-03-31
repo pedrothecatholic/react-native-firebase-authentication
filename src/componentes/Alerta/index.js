@@ -1,7 +1,7 @@
-import { React } from "react";
+import React from "react";
 import { Snackbar } from "react-native-paper";
 
-export function Alerta({ mensagem, error }) {
+export function Alerta({ mensagem, error, setError }) {
   return (
     <Snackbar
       visible={error}
