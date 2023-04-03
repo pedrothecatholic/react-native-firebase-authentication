@@ -6,12 +6,16 @@ import { logar } from "../../servicos/requisicoesFirebase";
 import estilos from "./estilos";
 import { Alerta } from "../../componentes/Alerta";
 import { auth } from "../../config/firebase";
+import { alteraDados, verificaSeTemEntradaVazia } from "../../utils/comum";
+import { entradas } from "./entradas";
 
 import animacaoCarregando from "../../../assets/animacaoCarregando.gif";
 
 export default function Login({ navigation }) {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [dados, setDados] = useState({
+    email: "",
+    senha: ""
+  });
   const [statusError, setStatusError] = useState("");
   const [mensagemError, setMensagemError] = useState("");
   const [carregando, setCarregando] = useState(true);
@@ -27,21 +31,16 @@ export default function Login({ navigation }) {
   }, []);
 
   async function realizarLogin() {
-    if (email == "") {
-      setMensagemError("O email é obrigatório!");
-      setStatusError("email");
-    } else if (senha == "") {
-      setMensagemError("A senha é obrigatória!");
-      setStatusError("senha");
-    } else {
-      const resultado = await logar(email, senha);
-      if (resultado == "erro") {
-        setStatusError("firebase");
-        setMensagemError("Email e senha não conferem");
-      } else {
-        navigation.replace("Principal");
-      }
+    //Função para verificar se email e senha são vazios
+    if (verificaSeTemEntradaVazia(dados, setDados)) return;
+
+    const resultado = await logar(dados.email, dados.senha);
+    if (resultado == "erro") {
+      setStatusError(true);
+      setMensagemError("Email ou senha não conferem!");
+      return;
     }
+    navigation.replace("Principal");
   }
 
   if (carregando) {
@@ -54,22 +53,18 @@ export default function Login({ navigation }) {
 
   return (
     <View style={estilos.container}>
-      <EntradaTexto
-        label="E-mail"
-        value={email}
-        onChangeText={(texto) => setEmail(texto)}
-        error={statusError == "email"}
-        messageError={mensagemError}
-      />
-      <EntradaTexto
-        label="Senha"
-        value={senha}
-        onChangeText={(texto) => setSenha(texto)}
-        secureTextEntry
-        error={statusError == "senha"}
-        messageError={mensagemError}
-      />
-
+      {entradas.map((entrada) => {
+        return (
+          <EntradaTexto
+            key={entrada.id}
+            {...entrada}
+            value={dados[entrada.name]}
+            onChangeText={(valor) =>
+              alteraDados(entrada.name, valor, dados, setDados)
+            }
+          />
+        );
+      })}
       <Alerta
         mensagem={mensagemError}
         error={setStatusError == "firebase"}
